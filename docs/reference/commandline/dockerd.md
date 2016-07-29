@@ -846,6 +846,19 @@ and provided subordinate uid and gid ranges. This default user will be named
 > pull`, `docker push`, and container startup as users expect with
 > user namespaces disabled.
 
+> **Note**: The Docker daemon creates a new segregated local cache of image
+> layer data every time a new subuid or subgid is used for remapping.  When
+> you run the daemon with a new mapping, a directory will be created under the
+> root of your graph directory (`/var/lib/docker` by default) with a name, uid,
+> and gid that correlate to the remapped root uid and gid. For example, if the
+> remapping user you provide to the `--userns-remap` flag has subordinate user and
+> group ranges that begin with ID 10000, then the root of the graph directory
+> for all images and containers running with that remap setting will be
+> `/var/lib/docker/10000.10000`.  If you don't provide user namespace remapping,
+> the normal graph directory will be used.  This segregation means you'll have
+> to rebuild all of the images you need when running the daemon with new user
+> namespace settings.
+
 ### Starting the daemon with user namespaces enabled
 
 To enable user namespace support, start the daemon with the
